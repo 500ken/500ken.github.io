@@ -1,0 +1,482 @@
+﻿<!DOCTYPE html>
+<!--
+Design by TEMPLATED
+http://templated.co
+Released for free under the Creative Commons Attribution License
+
+Name       : TwoColours
+Description: A two-column, fixed-width design with dark color scheme.
+Version    : 1.0
+Released   : 20130811
+
+-->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Marker Clustering</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
+    <link href="default.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
+
+    <!--[if IE 6]><link href="default_ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
+      <style type="text/css">
+           .map-box {
+               font-size: 14px;
+               margin-bottom: 3px;
+           }
+           #chart {
+            text-align: left;
+            box-shadow: 0px 2px 8px rgba(0,0,0,.2);
+            border: 1px solid #aaa;
+            margin: 10px;
+            background: white;
+            float: left;
+        }
+           input.along {
+               width: 50px;
+           }
+           /* Always set the map height explicitly to define the size of the div
+        * element that contains the map. */
+           #mapDiv {
+               height: 100%;
+           }
+           /* Optional: Makes the sample page fill the window. */
+           html, body {
+               height: 100%;
+               margin: 0;
+               padding: 0;
+           }
+           #tableclass{
+               width:200px;
+               height:250px;
+               text-align:center;
+               border: 1px solid black;
+               border-collapse:collapse;
+               background-color:#99d2ee;
+               color:black;
+               font-family:Aparajita;
+               margin-left:60px;
+               font-size:20px;                            
+           }
+          table, tr {
+              width:30px;
+/*              background-color:#99d2ee;*/
+              font-family:Aparajita;
+              font-weight: bold;
+          }
+    .gmap { display: block; width: 980px; height: 600px; }
+    .SvgOverlay { position: relative; width: 980px; height: 600px; }
+    .SvgOverlay svg { position: absolute; top: -4000px; left: -4000px; width: 8000px; height: 8000px; }
+    p.msg{ display: block; height: auto; width: 980px; line-height: 25px; padding-left: 10px; }
+    p.msg > span{ margin-right: 1em; }
+    .box{width:30%; float:left;}
+    .zone{width:100%; height:100%;}
+    </style>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="http://api.tiles.mapbox.com/mapbox.js/plugins/turf/v2.0.0/turf.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?libraries=drawing"></script>
+    <!--<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCMEGnrOKGYJxoqqnATk9mvq97FCpISDB0&callback=initMap"></script>-->
+    <!--<script async defer src="https://maps.googleapis.com/maps/api/js?callback=initMap"></script>-->
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=geometry"></script>
+    <script src="http://www.guriddo.net/demo/js/trirand/i18n/grid.locale-cn.js"></script>
+    <script src="http://www.guriddo.net/demo/js/trirand/i18n/grid.locale-en.js"></script>
+    <script src="http://www.guriddo.net/demo/js/trirand/jquery.jqGrid.min.js"></script>
+    <link rel="stylesheet" type="text/css" media="screen" href="css/ui.jqgrid.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="css/ui.jqgrid-bootstrap.css" />
+    
+    <script>
+            $.jgrid.defaults.width = 780;
+            $.jgrid.defaults.styleUI = 'Bootstrap';
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+</head>
+<body >
+    <div id="header">
+        <div id="menu" class="container">
+            <ul>
+                <li class="current_page_item"><a href="HtmlPage.html">歡迎光臨</a></li>
+                <li><a href="生活機能.html">生活機能</a></li>
+                <li><a href="房屋估價.html">房屋估價</a></li>
+                <li><a href="about.html">機能分群</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="page" class="container2" style="padding-top:60px;">
+        <div id="content" >
+            <div class="title2" style="height:300px">
+                <table border="1" id="tableclass" width="100" style="border:1 black medium;background-color:white">
+                    <!--<caption style="font-size:25px; padding-top:30px;height:60px;color:black;background-color:lightskyblue;font-family:'Arial Unicode MS';border: 1px solid black">分群與設施數量</caption>-->
+                    <tr >
+                        <th style="text-align:center;color:red">分類族群</th>                    
+                        <td id="msg" style="width:100px"></td>
+                    </tr>
+                    <tr>
+                        <th style="text-align:center;color:red">捷運站</th> 
+                        <td id="msgMRT">0</td>
+                    </tr>
+                    <tr>
+                        <th style="text-align:center;color:red">便利商店</th>              
+                        <td id="msgC">0</td>
+                    </tr>
+                    <tr>
+                        <th style="text-align:center;color:red">速食店</th>                    
+                        <td id="msgF">0</td>
+                    </tr>
+                    <tr>
+                        <th style="text-align:center;color:red">國小</th>           
+                        <td id="msgPRI">0</td>
+                    </tr>
+                    <tr>
+                        <th style="text-align:center;color:red">寺廟</th>
+                     
+                        <td id="msgT">0</td>
+                    </tr>
+                    <tr>
+                        <th style="text-align:center;color:red">圖書館</th>                   
+                        <td id="msgL">0</td>
+                    </tr>
+                </table>
+
+            </div>            
+
+            <div class="title2">
+                <table id="list4" style="width:200px;"></table>
+                <div id="jqGridPager" style="width:200px"></div>
+            </div>
+          </div>
+
+        <div id="content">
+        <div class="gmap" id="mapDiv" style="width: 750px; height: 500px"></div>
+<script>
+        var map, infoWindow = new google.maps.InfoWindow({ content: "" });
+        var dataMap = new google.maps.Data();
+        var turfPoint = turf.point([121.54355049133301,25.06164]);
+        var circle = turf.buffer(turfPoint, 0.3, "kilometers");
+        var pt, ubikePin, length, countL, countT, countMRT,countF,countC,countPRI;
+        var overlay = new google.maps.OverlayView();
+        var cc, setlocal, length, cluster, marker, dataset, svgoverlay, result, pointdata, positions = [];
+        var Clist = [], Tlist = [], setList=new Set(),disC=[],fc=0;
+
+//GOOGLE地圖初始化
+function initialize() {
+    var mapOptions = {
+        zoom: 15,
+        center: new google.maps.LatLng(25.06164, 121.54355049133301),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        styles: [
+  {
+      "featureType": "administrative",
+      "elementType": "geometry",
+      "stylers": [
+        {
+            "visibility": "off"
+        }
+      ]
+  },
+  {
+      "featureType": "poi",
+      "stylers": [
+        {
+            "visibility": "off"
+        }
+      ]
+  },
+  {
+      "featureType": "road",
+      "elementType": "labels.icon",
+      "stylers": [
+        {
+            "visibility": "off"
+        }
+      ]
+  },
+  {
+      "featureType": "transit",
+      "stylers": [
+        {
+            "visibility": "off"
+        }
+      ]
+  }
+        ]
+    };
+    var mapElement = document.getElementById("mapDiv");
+    map = new google.maps.Map(mapElement, mapOptions);
+    marker = new google.maps.Marker({
+        position: new google.maps.LatLng(25.06164, 121.54355049133301),
+   
+    });
+}
+initialize();
+//D3讀檔
+    d3.csv('houseobject.csv', function (data) {
+  result = data;
+  var arr = [];
+  result.map(function(d){d.arr = [d.lat, d.lng];});
+  main( result );
+    });
+    d3.csv("allfacility2.csv", function (data1) {
+        dataset = data1.map(function (d) {
+            return {
+                'lat': parseFloat(d.lat),
+                'lng': parseFloat(d.lng),
+                'name': d.name,
+                'type': d.type
+            };
+        });
+        draw(dataset, cc, setlocal);
+    });//endof d3.csvlatlng
+        
+    map.addListener('click', function (e) {
+        marker.setMap(null);
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(e.latLng.lat(), e.latLng.lng()),
+            map: map,
+        });
+        map.panTo(e.latLng);
+        var pt = turf.point([e.latLng.lng(), e.latLng.lat()]);
+        var c = turf.buffer(pt, 300, "meters");
+        draw(dataset, c, e.latLng);
+        setlocal = e.latLng;
+        cc = c;
+        document.getElementById('msgMRT').innerHTML = countMRT;
+        document.getElementById('msgC').innerHTML = countC;
+        document.getElementById('msgF').innerHTML = countF;
+        document.getElementById('msgPRI').innerHTML = countPRI;
+        document.getElementById('msgT').innerHTML = countT;
+        document.getElementById('msgL').innerHTML = countL;
+        //計算最短距離
+        //var d,less = 9999999;
+        //for (n = 0; n < disC.length; n++) {
+        //d = parseInt(turf.distance(turf.point([e.latLng.lng(), e.latLng.lat()]), turf.point([dataset[disC[n]].lng, dataset[disC[n]].lat]), 'kilometers') * 1000);
+        //if (d < less) {
+        //    less = d;
+        //    lessn = disC[n];
+        //}
+        //}
+        //d3.selectAll('p.msgT').html('<p>最近便利商店:' + dataset[lessn].name + '('+less+'公尺)</p><p>廟宇:'+Tlist+'</p>');
+        createTable(e);
+        var tablecolors = d3.scale.category10();
+        for (i = 0; i < 3; i++) {
+        tablecolors(i);
+        }
+        d3.select("table").selectAll("th").style("background-color",
+            function (d, i) {return tablecolors(parseFloat(cluster)-1);
+            }
+            )
+      
+    });
+    var createTable = function (e) {
+        var d = [];
+        for (n = 0; n < disC.length; n++) {
+            d[n] = { name: dataset[disC[n]].name, distance: parseInt(turf.distance(turf.point([e.latLng.lng(), e.latLng.lat()]), turf.point([dataset[disC[n]].lng, dataset[disC[n]].lat]), 'kilometers') * 1000), type: dataset[disC[n]].type };
+        }
+        $.jgrid.gridUnload("#list4");
+        jQuery("#list4").jqGrid({
+            datatype: "local",
+            data: d,
+            colNames: ['設施名稱', '距離(公尺)'],
+            colModel: [
+                { name: 'name', index: 'name', width: 120, align: "center" },
+                { name: 'distance', index: 'distance', width: 80, align: "center", sorttype: "float" }
+            ],
+            caption: "週邊設施列表",
+            pager: "#jqGridPager",
+            loadonce: true,
+            width: 320,
+            height: 110,
+            rowNum: 4,
+            scrollOffset:1,
+        });
+       
+    }
+
+ var draw = function (dataset, newCircle, pos) {
+        newCircle = newCircle ;
+        pos = pos || map.getCenter();
+
+        //清除移動軌跡
+        dataMap.setMap(null);
+        dataMap = new google.maps.Data();
+
+        //畫出初始圓
+        dataMap.addGeoJson(newCircle);
+        dataMap.setMap(map);
+
+        //計算距離
+        dataMap.addListener('dblclick', function (e) {
+            var anchor = new google.maps.MVCObject();
+            anchor.set("position", e.latLng);
+            var str = [];
+            str.push(e.feature.getProperty('addr') + '\n');
+            str.push(e.feature.getProperty('type') + '\n');
+            str.push('距離約 '
+              //+ google.maps.geometry.spherical.computeDistanceBetween(new google.maps.LatLng(e.latLng.lat(), e.latLng.lng()), new google.maps.LatLng(pos.lat(), pos.lng()))
+              + parseInt(turf.distance(turf.point([e.latLng.lng(), e.latLng.lat()]), turf.point([pos.lng(), pos.lat()]), 'kilometers') * 1000 )+
+              " 公尺");
+            infoWindow.setContent(str.join(''));
+            infoWindow.open(map, anchor);
+        });
+
+        length = dataset.length;
+        if (dataset) {
+            countC = 0;
+            countMRT = 0;
+            countF = 0;
+            countPRI = 0;
+            countT = 0;
+            countL = 0;
+            disC = [];
+            fc = 0;
+            //變更圖示
+            dataMap.setStyle(function (feature) {
+                if (feature.getProperty('inner')) {
+                    if (feature.getProperty('type') == "C") {
+                        return { icon: src = "smallpic/C.png" }
+                    }
+                    else if (feature.getProperty('type') == "MRT") {
+                        return { icon: src = "smallpic/MRT.jpg" }
+                    }
+                    else if (feature.getProperty('type') == "F") {
+                        return { icon: src = "smallpic/food.png" }
+                    }
+                    else if (feature.getProperty('type') == "PRI") {
+                        return { icon: src = "smallpic/PRI.png" }
+                    }
+                    else if (feature.getProperty('type') == "L") {
+                        return { icon: src = "smallpic/library.png" }
+                    }
+                    else if (feature.getProperty('type') == "T") {
+                        return { icon: src = "smallpic/yin-yang.png" }
+                    }
+                }
+                else {
+                    return { opacity: 0.1 };
+                }
+            });
+            Clist=[]
+            //載入機能點到地圖上
+            for (var i = 0; i < length; i++) {
+                pt = turf.point([parseFloat(dataset[i].lng), parseFloat(dataset[i].lat)],
+                    { id: i, addr: dataset[i].name, type: dataset[i].type });
+                ptt = dataset[i].type;
+                if (turf.inside(pt, newCircle.features[0])) {
+                    pt.properties.inner = "ture";
+                    disC[fc] = i;
+                    fc = fc + 1;
+                    if (dataset[i].type == 'C') {
+                              
+                        countC = countC + 1;
+                    }
+                    else if (dataset[i].type == 'MRT') {
+                        countMRT = countMRT + 1
+                    }
+                    else if (dataset[i].type == 'F') {
+                        countF = countF + 1
+                    }
+                    else if (dataset[i].type == 'PRI') {
+                        countPRI = countPRI + 1
+                    }
+                    else if (dataset[i].type == 'L') {
+                        countL = countL + 1
+                    }
+                    else if (dataset[i].type == 'T') {
+                        countT = countT + 1
+                    }
+                    dataMap.addGeoJson(pt);
+                }
+              //  dataMap.addGeoJson(pt);
+            }
+        }
+    };
+
+function main(points) {
+
+  overlay.onAdd = function () {
+    var layer = d3.select(this.getPanes().overlayMouseTarget).append("div").attr("class", "SvgOverlay");
+    var svg = layer.append("svg");
+    var svgoverlay = svg.append("g").attr("class", "AdminDivisions");
+    var markerOverlay = this;
+    var overlayProjection = markerOverlay.getProjection();
+    var edgeWidth = 0;
+
+    var googleMapProjection = function (coordinates) {
+      var googleCoordinates = new google.maps.LatLng(coordinates[0], coordinates[1]);
+      var pixelCoordinates = overlayProjection.fromLatLngToDivPixel(googleCoordinates);
+      return [pixelCoordinates.x + 4000, pixelCoordinates.y + 4000];
+    }
+
+    overlay.draw = function () {
+      pointdata = points;
+      positions = [];
+      pointdata.forEach(function (d, i) {
+        positions.push(googleMapProjection(d.arr));
+      });
+
+     var polygons = d3.geom.voronoi(positions);
+     var colors = d3.scale.category10();
+     var pathAttr = {
+        "d": function(d, i) { return (polygons[i]) ? "M" + polygons[i].join("L") + "Z" : null; },
+        'stroke-width':0,
+        'stroke': "#000",
+        'fill-opacity': 0.5,
+        'fill': function (d, i) {
+            return colors(pointdata[i].cluster);
+        }
+      };
+
+      // 邊界與場點
+      var path = svgoverlay.selectAll("path")
+        .data(pointdata)
+        .attr(pathAttr)
+        .enter()
+        .append("svg:path")
+        .attr(pathAttr);
+
+        //地圖點選功能
+      path.on({
+          'click': function (d, i) {
+              cluster = pointdata[i].cluster;
+              var cname=["樂活住宅","經濟住宅","精華住宅","教育住宅"]
+              document.getElementById('msg').innerHTML = cname[pointdata[i].cluster-1];
+        
+        }
+      });      
+    };
+    $('input[name="isShow"]').change(function () {
+        var val = $(this).val();
+        var colors = d3.scale.category10();
+        if (val === '0') {
+            svgoverlay.selectAll("path").attr({
+                'stroke-width': 0,
+                'fill': 'transparent',
+                'fill-opacity': 0
+            });
+            edgeWidth = 0;
+        } else {
+            svgoverlay.selectAll("path").attr({
+                'stroke-width': 0,
+                'fill-opacity': 0.3,
+                'fill': function (d, i) { return colors((pointdata[i].cluster));}
+            });
+            edgeWidth = 1;
+        }
+    });
+  };
+  overlay.setMap(map);
+};       
+</script>
+                <p>
+                    <label><input type="radio" name="isShow" value="1" checked> 顯示族群標色</label>
+                    <label><input type="radio" name="isShow" value="0"> 隱藏族群標色</label>
+                </p>
+        </div>
+    </div>
+</body>
+</html>
+
