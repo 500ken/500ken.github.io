@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<!--
+Design by TEMPLATED
+http://templated.co
+Released for free under the Creative Commons Attribution License
+
+Name       : TwoColours
+Description: A two-column, fixed-width design with dark color scheme.
+Version    : 1.0
+Released   : 20130811
+
+-->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900" rel="stylesheet" />
+    <link href="default.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="fonts.css" rel="stylesheet" type="text/css" media="all" />
+
+    <!--[if IE 6]><link href="default_ie6.css" rel="stylesheet" type="text/css" /><![endif]-->
+    <script>
+        //將圖片來源編入一個陣列
+        var ImgArray = new Array("images/count.jpg", "images/data.jpg", "images/e.jpg");
+
+    </script>
+
+</head>
+<body>
+    <div id="header">
+        <div id="menu" class="container">
+            <ul>
+                <li class="current_page_item"><a href="index.html">歡迎光臨</a></li>
+                <li><a href="生活機能.html">生活機能</a></li>
+                <li><a href="房屋估價.html">房屋估價</a></li>
+                <li><a href="about.html">機能分群</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="page" class="container" style="width:70%; padding-left:600px" >
+        <div id="content" style="font-size:20px">
+           
+                <h2>Welcome to Our Website</h2>
+            
+            <img src="images/123545.jpg" />  
+        </div>
+
+        <div id="d1" width="500" height="400">
+            <img id="demo" />
+            <h1 id="checktest" style="padding-right:150px" align="center"></h1>
+        </div>
+
+    </div> 
+    <script>
+        var num = 0;
+        var intro = ["機能","估價", "大數據"];
+            round();
+            function turnnext() {
+                num++;
+                if (num >= 3) {
+                    num = 0;
+                }
+            }
+            function round() {
+                document.getElementById('demo').src = ImgArray[num];
+                for (i = 0; i < ImgArray.length; i++) {
+                    if (i == num) {
+                        continue;
+                    }
+                }
+                turnnext();
+                t = setTimeout("round()", 2000);
+            }
+    </script>
+</body>
+</html>
+
